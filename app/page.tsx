@@ -1,11 +1,8 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import { ACTIVE_TOPICS } from '@/lib/topics'
-import {
-  getTopicStats,
-  getTopicSnapshots,
-  getRisingRepos,
-} from '@/lib/supabase'
+import { getTopicStats, getTopicSnapshots, getRisingRepos } from '@/lib/supabase'
 import {
   calcTopicVelocity,
   classifyLifecycleStatus,
@@ -42,15 +39,15 @@ async function buildTopicsWithStats(): Promise<TopicWithStats[]> {
 }
 
 export default async function HomePage() {
-  const [topicsWithStats, risingRepos] = await Promise.all([
+  const [topicsWithStats, risingRepos, t] = await Promise.all([
     buildTopicsWithStats(),
     getRisingRepos(6),
+    getTranslations('Home'),
   ])
 
   const headline = generateEcosystemHeadline(topicsWithStats)
-
   const chartData = buildLifecycleChartData(
-    topicsWithStats.map((t) => ({ topic: t, snapshots: t.snapshots }))
+    topicsWithStats.map((tp) => ({ topic: tp, snapshots: tp.snapshots }))
   )
 
   return (
@@ -58,33 +55,24 @@ export default async function HomePage() {
       {/* Hero */}
       <section>
         <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-snug">
-          Track the evolution of<br />
-          <span className="text-blue-400">AI-native development conventions</span>
+          {t('hero1')}<br />
+          <span className="text-blue-400">{t('hero2')}</span>
         </h1>
-        <p className="mt-3 text-muted max-w-xl leading-relaxed">
-          Not which tools are &ldquo;best&rdquo; — but which conventions, workflows, and agent patterns
-          are gaining momentum across the ecosystem.
-        </p>
+        <p className="mt-3 text-muted max-w-xl leading-relaxed">{t('desc')}</p>
       </section>
 
       {/* Two-column layout */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Lifecycle chart + Rising */}
         <div className="space-y-8">
           {/* Lifecycle Chart */}
           <section>
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="font-semibold text-foreground">Topic Lifecycle</h2>
-                <p className="text-xs text-faint mt-0.5">
-                  Repo count growth over time — 90 days
-                </p>
+                <h2 className="font-semibold text-foreground">{t('lifecycle_title')}</h2>
+                <p className="text-xs text-faint mt-0.5">{t('lifecycle_sub')}</p>
               </div>
-              <Link
-                href="/lifecycle"
-                className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
-              >
-                Full view →
+              <Link href="/lifecycle" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
+                {t('lifecycle_full')}
               </Link>
             </div>
             <div className="rounded-xl border border-rim bg-surface p-4">
@@ -98,23 +86,15 @@ export default async function HomePage() {
           <section>
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="font-semibold text-foreground">Rising This Week</h2>
-                <p className="text-xs text-faint mt-0.5">
-                  Fastest star velocity in the last 7 days
-                </p>
+                <h2 className="font-semibold text-foreground">{t('rising_title')}</h2>
+                <p className="text-xs text-faint mt-0.5">{t('rising_sub')}</p>
               </div>
-              <Link
-                href="/trends"
-                className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
-              >
-                All trends →
+              <Link href="/trends" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
+                {t('rising_all')}
               </Link>
             </div>
             {risingRepos.length === 0 ? (
-              <EmptyState
-                message="Velocity data accumulates over time"
-                sub="Snapshots are saved daily — trending repos will appear tomorrow"
-              />
+              <EmptyState message={t('empty_msg')} sub={t('empty_sub')} />
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {risingRepos.map((repo) => (
@@ -125,7 +105,6 @@ export default async function HomePage() {
           </section>
         </div>
 
-        {/* Right: Stats sidebar */}
         <aside>
           <EcosystemStats topics={topicsWithStats} headline={headline} />
         </aside>
@@ -133,7 +112,7 @@ export default async function HomePage() {
 
       {/* Topic quick links */}
       <section>
-        <h2 className="font-semibold text-foreground mb-4">Browse by Topic</h2>
+        <h2 className="font-semibold text-foreground mb-4">{t('browse_title')}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {topicsWithStats.map((topic) => (
             <Link
@@ -148,9 +127,7 @@ export default async function HomePage() {
                   </p>
                   <p className="text-xs text-muted mt-0.5">{topic.description}</p>
                 </div>
-                <span
-                  className={`text-xs px-2 py-0.5 rounded-full border shrink-0 ml-3 ${STATUS_BG[topic.status]}`}
-                >
+                <span className={`text-xs px-2 py-0.5 rounded-full border shrink-0 ml-3 ${STATUS_BG[topic.status]}`}>
                   {STATUS_LABELS[topic.status]}
                 </span>
               </div>

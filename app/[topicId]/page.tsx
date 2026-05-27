@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import { getTopicById } from '@/lib/topics'
 import { getReposByTopic, getTopicStats, getReposWithVelocity } from '@/lib/supabase'
 import RepoCard from '@/components/RepoCard'
@@ -10,12 +11,6 @@ export const dynamic = 'force-dynamic'
 const CATEGORIES: CategoryOption[] = [
   'all', 'AI/Agents', 'Frontend', 'Testing', 'Workflow',
   'Security', 'Docs', 'Utility',
-]
-
-const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-  { value: 'stars', label: 'Most Stars' },
-  { value: 'velocity_7d', label: 'Trending' },
-  { value: 'last_commit', label: 'Recently Updated' },
 ]
 
 interface Props {
@@ -30,6 +25,7 @@ export default async function TopicPage({ params, searchParams }: Props) {
   const topic = getTopicById(topicId)
   if (!topic || !topic.active) notFound()
 
+  const t = await getTranslations('TopicPage')
   const currentPage = Math.max(1, parseInt(page))
   const limit = 24
   const offset = (currentPage - 1) * limit
@@ -50,6 +46,12 @@ export default async function TopicPage({ params, searchParams }: Props) {
 
   const hasMore = sort !== 'velocity_7d' && offset + repos.length < stats.repo_count
 
+  const SORT_OPTIONS = [
+    { value: 'stars',       label: t('sort_stars') },
+    { value: 'velocity_7d', label: t('sort_trending') },
+    { value: 'last_commit', label: t('sort_recent') },
+  ]
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -60,14 +62,15 @@ export default async function TopicPage({ params, searchParams }: Props) {
           <div className="flex items-center gap-3 mt-2">
             <span className="text-xs text-faint">{stats.repo_count.toLocaleString()} repos</span>
             <span className="text-faint opacity-40">·</span>
-            <span className="text-xs text-amber-400/60">★ {stats.total_stars.toLocaleString()} total</span>
+            <span className="text-xs text-amber-400/60">
+              {t('total_stars', { count: stats.total_stars.toLocaleString() })}
+            </span>
           </div>
         </div>
       </div>
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
-        {/* Category filter */}
         <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
           {CATEGORIES.map((cat) => (
             <Link
@@ -79,14 +82,12 @@ export default async function TopicPage({ params, searchParams }: Props) {
                   : 'text-muted hover:text-sub hover:bg-surf-hi'
               }`}
             >
-              {cat === 'all' ? 'All' : cat}
+              {cat === 'all' ? t('all') : cat}
             </Link>
           ))}
         </div>
-
-        {/* Sort */}
         <div className="flex items-center gap-2 sm:ml-auto shrink-0">
-          <span className="text-xs text-faint">Sort:</span>
+          <span className="text-xs text-faint">{t('sort')}</span>
           {SORT_OPTIONS.map((opt) => (
             <Link
               key={opt.value}
@@ -106,7 +107,7 @@ export default async function TopicPage({ params, searchParams }: Props) {
       {/* Repo grid */}
       {repos.length === 0 ? (
         <div className="rounded-xl border border-dashed border-rim p-12 text-center text-muted text-sm">
-          No repos found. Try a different filter or run the crawl cron.
+          {t('empty')}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -119,7 +120,7 @@ export default async function TopicPage({ params, searchParams }: Props) {
       {/* Pagination */}
       <div className="flex items-center justify-between pt-2">
         <p className="text-xs text-faint">
-          Showing {offset + 1}–{offset + repos.length} of {stats.repo_count.toLocaleString()}
+          {t('showing', { from: offset + 1, to: offset + repos.length, total: stats.repo_count.toLocaleString() })}
         </p>
         <div className="flex gap-2">
           {currentPage > 1 && (
@@ -127,7 +128,7 @@ export default async function TopicPage({ params, searchParams }: Props) {
               href={buildUrl(topicId, { sort, category, page: String(currentPage - 1) })}
               className="px-4 py-2 rounded-lg text-sm text-muted hover:text-foreground hover:bg-surf-hi border border-rim transition-all"
             >
-              ← Prev
+              {t('prev')}
             </Link>
           )}
           {hasMore && (
@@ -135,7 +136,7 @@ export default async function TopicPage({ params, searchParams }: Props) {
               href={buildUrl(topicId, { sort, category, page: String(currentPage + 1) })}
               className="px-4 py-2 rounded-lg text-sm text-muted hover:text-foreground hover:bg-surf-hi border border-rim transition-all"
             >
-              Next →
+              {t('next')}
             </Link>
           )}
         </div>
@@ -144,10 +145,7 @@ export default async function TopicPage({ params, searchParams }: Props) {
   )
 }
 
-function buildUrl(
-  topicId: string,
-  params: { sort: string; category: string; page: string }
-): string {
+function buildUrl(topicId: string, params: { sort: string; category: string; page: string }): string {
   const sp = new URLSearchParams()
   if (params.sort !== 'stars') sp.set('sort', params.sort)
   if (params.category !== 'all') sp.set('category', params.category)

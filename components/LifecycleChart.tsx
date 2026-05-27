@@ -11,16 +11,17 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { useTheme } from 'next-themes'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import type { LifecycleChartPoint } from '@/lib/lifecycle'
 import type { Topic } from '@/types'
 
 const TOPIC_COLORS: Record<string, string> = {
-  skills:      '#3b82f6', // blue
-  claudemd:    '#10b981', // emerald
-  agentsmd:    '#f59e0b', // amber
-  mcpjson:     '#8b5cf6', // violet
-  cursorrules: '#ec4899', // pink
+  skills:      '#3b82f6',
+  claudemd:    '#10b981',
+  agentsmd:    '#f59e0b',
+  mcpjson:     '#8b5cf6',
+  cursorrules: '#ec4899',
 }
 
 interface LifecycleChartProps {
@@ -47,20 +48,14 @@ function useChartColors() {
   }
 }
 
-export default function LifecycleChart({
-  data,
-  topics,
-  height = 320,
-}: LifecycleChartProps) {
+export default function LifecycleChart({ data, topics, height = 320 }: LifecycleChartProps) {
   const c = useChartColors()
+  const t = useTranslations('Lifecycle')
 
   if (data.length === 0) {
     return (
-      <div
-        style={{ height }}
-        className="flex items-center justify-center text-muted text-sm"
-      >
-        Not enough data yet — check back after the first snapshot runs.
+      <div style={{ height }} className="flex items-center justify-center text-muted text-sm">
+        {t('no_data')}
       </div>
     )
   }
@@ -93,12 +88,12 @@ export default function LifecycleChart({
           labelStyle={{ color: c.tooltipLabel, marginBottom: 4 }}
           itemStyle={{ padding: '2px 0' }}
           formatter={(value, name) => [
-            Number(value).toLocaleString() + ' repos',
-            topics.find((t) => t.id === String(name))?.label ?? String(name),
+            t('tooltip_repos', { count: Number(value).toLocaleString() }),
+            topics.find((tp) => tp.id === String(name))?.label ?? String(name),
           ]}
         />
         <Legend
-          formatter={(value) => topics.find((t) => t.id === value)?.label ?? value}
+          formatter={(value) => topics.find((tp) => tp.id === value)?.label ?? value}
           wrapperStyle={{ fontSize: '12px', color: c.legend }}
         />
         {topics.map((topic) => (

@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { useTheme } from 'next-themes'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import type { StarChartPoint } from '@/lib/lifecycle'
 
@@ -26,31 +27,25 @@ function useChartColors() {
 
   const dark = !mounted || resolvedTheme === 'dark'
   return {
-    grid:         dark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.07)',
-    tick:         dark ? 'rgba(255,255,255,0.30)' : 'rgba(0,0,0,0.40)',
-    tooltipBg:    dark ? '#0f1117'                : '#ffffff',
-    tooltipBord:  dark ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.10)',
-    tooltipText:  dark ? 'rgba(255,255,255,0.80)' : 'rgba(15,23,42,0.85)',
+    grid:        dark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.07)',
+    tick:        dark ? 'rgba(255,255,255,0.30)' : 'rgba(0,0,0,0.40)',
+    tooltipBg:   dark ? '#0f1117'                : '#ffffff',
+    tooltipBord: dark ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.10)',
+    tooltipText: dark ? 'rgba(255,255,255,0.80)' : 'rgba(15,23,42,0.85)',
   }
 }
 
-export default function TrendChart({
-  data,
-  color = '#3b82f6',
-  height = 200,
-}: TrendChartProps) {
+export default function TrendChart({ data, color = '#3b82f6', height = 200 }: TrendChartProps) {
   const c = useChartColors()
+  const t = useTranslations('Detail')
 
   if (data.length < 2) {
     return (
-      <div
-        style={{ height }}
-        className="flex flex-col items-center justify-center gap-1.5 text-faint"
-      >
+      <div style={{ height }} className="flex flex-col items-center justify-center gap-1.5 text-faint">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M3 3v18h18M7 16l4-4 4 4 4-6" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
-        <span className="text-xs">Snapshot data accumulates daily — check back tomorrow</span>
+        <span className="text-xs">{t('chart_empty')}</span>
       </div>
     )
   }

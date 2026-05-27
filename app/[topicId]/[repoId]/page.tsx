@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
+import { getTranslations } from 'next-intl/server'
 import { getTopicById } from '@/lib/topics'
 import { getRepoById, getRepoSnapshots, getReposByTopic } from '@/lib/supabase'
 import { buildStarChartData } from '@/lib/lifecycle'
@@ -21,9 +22,10 @@ export default async function RepoDetailPage({ params }: Props) {
   const topic = getTopicById(topicId)
   if (!topic) notFound()
 
-  const [repo, snapshots] = await Promise.all([
+  const [repo, snapshots, t] = await Promise.all([
     getRepoById(repoId),
     getRepoSnapshots(repoId, 30),
+    getTranslations('Detail'),
   ])
 
   if (!repo) notFound()
@@ -49,7 +51,7 @@ export default async function RepoDetailPage({ params }: Props) {
     <div className="space-y-8 max-w-3xl">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-xs text-faint">
-        <Link href="/" className="hover:text-muted transition-colors">Home</Link>
+        <Link href="/" className="hover:text-muted transition-colors">{t('home')}</Link>
         <span>/</span>
         <Link href={`/${topicId}`} className="hover:text-muted transition-colors">
           {topic.label}
@@ -76,17 +78,14 @@ export default async function RepoDetailPage({ params }: Props) {
             className="shrink-0 flex items-center gap-2 px-4 py-2 rounded-lg border border-rim text-sm text-muted hover:text-foreground hover:border-rim-hi transition-all"
           >
             <GithubIcon />
-            GitHub
+            {t('github')}
           </a>
         </div>
 
         {repo.description && (
-          <p className="text-sub leading-relaxed">
-            {stripMarkdown(repo.description)}
-          </p>
+          <p className="text-sub leading-relaxed">{stripMarkdown(repo.description)}</p>
         )}
 
-        {/* Tags */}
         <div className="flex items-center gap-2 flex-wrap">
           {repo.category && (
             <span className="text-xs px-2.5 py-1 rounded-full border border-rim bg-surface text-muted">
@@ -103,30 +102,24 @@ export default async function RepoDetailPage({ params }: Props) {
 
       {/* Stats row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <StatItem label="Stars" value={repo.stars.toLocaleString()} icon="★" />
-        <StatItem label="Forks" value={repo.forks.toLocaleString()} icon="⑂" />
+        <StatItem label={t('stars')} value={repo.stars.toLocaleString()} icon="★" />
+        <StatItem label={t('forks')} value={repo.forks.toLocaleString()} icon="⑂" />
+        <StatItem label={t('last_commit')} value={commitLabel ?? 'Unknown'} icon="⏱" />
         <StatItem
-          label="Last Commit"
-          value={commitLabel ?? 'Unknown'}
-          icon="⏱"
-        />
-        <StatItem
-          label="Maintenance"
+          label={t('maintenance')}
           value={`${maintenanceScore}/100`}
           icon="⚡"
           valueClass={
-            maintenanceScore >= 70
-              ? 'text-emerald-400'
-              : maintenanceScore >= 40
-              ? 'text-amber-400'
-              : 'text-red-400'
+            maintenanceScore >= 70 ? 'text-emerald-400'
+            : maintenanceScore >= 40 ? 'text-amber-400'
+            : 'text-red-400'
           }
         />
       </div>
 
-      {/* Star history chart */}
+      {/* Star history */}
       <section>
-        <h2 className="font-semibold text-foreground mb-3">Star History (30 days)</h2>
+        <h2 className="font-semibold text-foreground mb-3">{t('star_history')}</h2>
         <div className="rounded-xl border border-rim bg-surface p-4">
           <TrendChart data={starChartData} height={220} />
         </div>
@@ -134,7 +127,7 @@ export default async function RepoDetailPage({ params }: Props) {
 
       {/* Detected conventions */}
       <section>
-        <h2 className="font-semibold text-foreground mb-3">Detected Conventions</h2>
+        <h2 className="font-semibold text-foreground mb-3">{t('conventions')}</h2>
         <div className="rounded-xl border border-rim bg-surface p-5">
           <DetectedConventions files={repo.detected_files ?? []} />
         </div>
@@ -143,7 +136,7 @@ export default async function RepoDetailPage({ params }: Props) {
       {/* Structure score */}
       {repo.structure_score !== null && repo.structure_score !== undefined && (
         <section>
-          <h2 className="font-semibold text-foreground mb-3">Structure Score</h2>
+          <h2 className="font-semibold text-foreground mb-3">{t('structure')}</h2>
           <div className="rounded-xl border border-rim bg-surface p-5">
             <div className="flex items-center gap-4">
               <div className="text-3xl font-bold text-foreground">{repo.structure_score}</div>
@@ -154,10 +147,7 @@ export default async function RepoDetailPage({ params }: Props) {
                     style={{ width: `${repo.structure_score}%` }}
                   />
                 </div>
-                <p className="text-xs text-faint mt-1.5">
-                  Spec compliance score — measures structure, not quality.
-                  Has frontmatter, name, description, examples, and instructions.
-                </p>
+                <p className="text-xs text-faint mt-1.5">{t('structure_note')}</p>
               </div>
             </div>
           </div>
@@ -168,12 +158,14 @@ export default async function RepoDetailPage({ params }: Props) {
       {similarFiltered.length > 0 && (
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-semibold text-foreground">More in {repo.category ?? topic.label}</h2>
+            <h2 className="font-semibold text-foreground">
+              {t('more_in', { category: repo.category ?? topic.label })}
+            </h2>
             <Link
               href={`/${topicId}${repo.category ? `?category=${encodeURIComponent(repo.category)}` : ''}`}
               className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
             >
-              See all →
+              {t('see_all')}
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -188,15 +180,9 @@ export default async function RepoDetailPage({ params }: Props) {
 }
 
 function StatItem({
-  label,
-  value,
-  icon,
-  valueClass = 'text-foreground',
+  label, value, icon, valueClass = 'text-foreground',
 }: {
-  label: string
-  value: string
-  icon: string
-  valueClass?: string
+  label: string; value: string; icon: string; valueClass?: string
 }) {
   return (
     <div className="rounded-xl border border-rim bg-surface p-4">

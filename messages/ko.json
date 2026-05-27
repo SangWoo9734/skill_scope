@@ -1,0 +1,96 @@
+{
+  "Nav": {
+    "overview": "개요",
+    "trending": "트렌딩",
+    "lifecycle": "라이프사이클"
+  },
+  "Layout": {
+    "tagline": "에코시스템 인텔리전스",
+    "footer_signal": "별 = 관심도 지표, 사용량 아님",
+    "footer_source": "GitHub Search API 데이터"
+  },
+  "Home": {
+    "hero1": "AI 네이티브 개발 컨벤션의",
+    "hero2": "진화를 추적합니다",
+    "desc": "어떤 도구가 '최고'인지가 아닌 — 어떤 컨벤션, 워크플로우, 에이전트 패턴이 생태계 전반에서 모멘텀을 얻고 있는지를 추적합니다.",
+    "lifecycle_title": "토픽 라이프사이클",
+    "lifecycle_sub": "시간에 따른 레포 수 성장 — 90일",
+    "lifecycle_full": "전체 보기 →",
+    "rising_title": "이번 주 급상승",
+    "rising_sub": "최근 7일간 가장 빠른 스타 속도",
+    "rising_all": "전체 트렌드 →",
+    "browse_title": "토픽별 탐색",
+    "empty_msg": "속도 데이터가 축적되고 있습니다",
+    "empty_sub": "스냅샷이 매일 저장됩니다 — 내일 트렌딩 레포가 표시됩니다"
+  },
+  "Stats": {
+    "note": "별 = 관심도 지표, 사용량 아님. 매일 업데이트.",
+    "total_repos": "추적 중인 레포 수",
+    "total_stars": "총 스타 수",
+    "attention": "커뮤니티 관심도",
+    "across": "{n}개 토픽",
+    "by_topic": "토픽별"
+  },
+  "TopicPage": {
+    "sort": "정렬:",
+    "sort_stars": "스타 많은 순",
+    "sort_trending": "트렌딩",
+    "sort_recent": "최근 업데이트",
+    "all": "전체",
+    "total_stars": "★ {count} 합계",
+    "empty": "레포를 찾을 수 없습니다. 다른 필터를 시도하거나 크롤 작업을 실행하세요.",
+    "showing": "{from}–{to} / {total}개 표시",
+    "prev": "← 이전",
+    "next": "다음 →"
+  },
+  "Detail": {
+    "home": "홈",
+    "github": "GitHub",
+    "stars": "스타",
+    "forks": "포크",
+    "last_commit": "최근 커밋",
+    "maintenance": "유지보수",
+    "star_history": "스타 히스토리 (30일)",
+    "conventions": "감지된 컨벤션",
+    "structure": "구조 점수",
+    "structure_note": "스펙 준수 점수 — 품질이 아닌 구조를 측정합니다. 프론트매터, 이름, 설명, 예제, 지시사항 포함 여부.",
+    "more_in": "{category} 더 보기",
+    "see_all": "전체 보기 →",
+    "chart_empty": "스냅샷 데이터가 매일 축적됩니다 — 내일 확인하세요"
+  },
+  "Lifecycle": {
+    "title": "토픽 라이프사이클",
+    "sub": "어떤 AI 네이티브 개발 컨벤션이 부상, 성장, 또는 정체 중인가요?",
+    "chart90_title": "90일 레포 성장",
+    "chart90_sub": "토픽별 총 레포 수 — 90일간 누적",
+    "chart30_title": "30일 상세",
+    "chart30_sub": "최근 30일 확대 보기",
+    "table_title": "현재 상태",
+    "col_topic": "토픽",
+    "col_repos": "레포",
+    "col_stars": "총 스타",
+    "col_7d": "+7일 레포",
+    "col_30d": "+30일 %",
+    "col_status": "상태",
+    "repos_suffix": "개 레포",
+    "how_title": "라이프사이클 상태 결정 방법",
+    "how_desc": "상태는 30일 레포 수 성장률 기준:",
+    "how_note": "이 기준은 잠정적입니다. 더 많은 데이터가 쌓이면 재조정됩니다.",
+    "no_data": "데이터가 부족합니다 — 첫 스냅샷 실행 후 확인하세요.",
+    "tooltip_repos": "{count}개 레포"
+  },
+  "Trends": {
+    "title": "트렌드 속도",
+    "sub": "별은 관심도 지표이지 품질이 아닙니다. 속도는 관심이 이동하는 방향을 보여줍니다.",
+    "rising_title": "이번 주 급상승",
+    "rising_sub": "전체 토픽에서 7일 스타 속도 1위",
+    "fastest_title": "{topic} — 빠른 성장",
+    "fastest_sub": "이 토픽에서 7일 속도 상위 5개",
+    "empty": "속도 데이터가 없습니다. 크롤 + 스냅샷 크론을 실행하세요.",
+    "formula_title": "속도 공식",
+    "formula_1": "velocity_7d  = stars_now − stars_7days_ago",
+    "formula_2": "velocity_30d = stars_now − stars_30days_ago",
+    "formula_3": "acceleration = velocity_7d(이번 주) − velocity_7d(지난 주)",
+    "formula_note": "최소 하루의 스냅샷 히스토리가 필요합니다. 스타가 적어도 속도가 높은 레포는 의도적으로 노출됩니다 — 초기 신호가 중요합니다."
+  }
+}

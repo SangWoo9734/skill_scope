@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import type { Topic } from '@/types'
 
 interface TopicTabsProps {
@@ -10,11 +11,12 @@ interface TopicTabsProps {
 
 export default function TopicTabs({ topics }: TopicTabsProps) {
   const pathname = usePathname()
+  const t = useTranslations('Nav')
   const activeTopics = topics.filter((t) => t.active)
 
   return (
     <div className="flex items-center gap-1 overflow-x-auto scrollbar-none">
-      <TabLink href="/" label="Overview" pathname={pathname} exact />
+      <TabLink href="/" label={t('overview')} pathname={pathname} exact />
       {activeTopics.map((topic) => (
         <TabLink
           key={topic.id}
@@ -23,8 +25,8 @@ export default function TopicTabs({ topics }: TopicTabsProps) {
           pathname={pathname}
         />
       ))}
-      <TabLink href="/trends" label="Trending" pathname={pathname} />
-      <TabLink href="/lifecycle" label="Lifecycle" pathname={pathname} />
+      <TabLink href="/trends" label={t('trending')} pathname={pathname} />
+      <TabLink href="/lifecycle" label={t('lifecycle')} pathname={pathname} />
     </div>
   )
 }

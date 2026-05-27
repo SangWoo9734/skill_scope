@@ -1,0 +1,96 @@
+{
+  "Nav": {
+    "overview": "Overview",
+    "trending": "Trending",
+    "lifecycle": "Lifecycle"
+  },
+  "Layout": {
+    "tagline": "ecosystem intelligence",
+    "footer_signal": "Stars = interest signal, not usage",
+    "footer_source": "Data from GitHub Search API"
+  },
+  "Home": {
+    "hero1": "Track the evolution of",
+    "hero2": "AI-native development conventions",
+    "desc": "Not which tools are \"best\" — but which conventions, workflows, and agent patterns are gaining momentum across the ecosystem.",
+    "lifecycle_title": "Topic Lifecycle",
+    "lifecycle_sub": "Repo count growth over time — 90 days",
+    "lifecycle_full": "Full view →",
+    "rising_title": "Rising This Week",
+    "rising_sub": "Fastest star velocity in the last 7 days",
+    "rising_all": "All trends →",
+    "browse_title": "Browse by Topic",
+    "empty_msg": "Velocity data accumulates over time",
+    "empty_sub": "Snapshots are saved daily — trending repos will appear tomorrow"
+  },
+  "Stats": {
+    "note": "Stars = interest signal, not usage. Updated daily.",
+    "total_repos": "Total Repos Tracked",
+    "total_stars": "Total Stars",
+    "attention": "community attention",
+    "across": "across {n} topics",
+    "by_topic": "By Topic"
+  },
+  "TopicPage": {
+    "sort": "Sort:",
+    "sort_stars": "Most Stars",
+    "sort_trending": "Trending",
+    "sort_recent": "Recently Updated",
+    "all": "All",
+    "total_stars": "★ {count} total",
+    "empty": "No repos found. Try a different filter or run the crawl cron.",
+    "showing": "Showing {from}–{to} of {total}",
+    "prev": "← Prev",
+    "next": "Next →"
+  },
+  "Detail": {
+    "home": "Home",
+    "github": "GitHub",
+    "stars": "Stars",
+    "forks": "Forks",
+    "last_commit": "Last Commit",
+    "maintenance": "Maintenance",
+    "star_history": "Star History (30 days)",
+    "conventions": "Detected Conventions",
+    "structure": "Structure Score",
+    "structure_note": "Spec compliance score — measures structure, not quality. Has frontmatter, name, description, examples, and instructions.",
+    "more_in": "More in {category}",
+    "see_all": "See all →",
+    "chart_empty": "Snapshot data accumulates daily — check back tomorrow"
+  },
+  "Lifecycle": {
+    "title": "Topic Lifecycle",
+    "sub": "Which AI-native development conventions are emerging, growing, or plateauing?",
+    "chart90_title": "90-Day Repo Growth",
+    "chart90_sub": "Total repos per topic — cumulative count over 90 days",
+    "chart30_title": "30-Day Detail",
+    "chart30_sub": "Zoomed view of the last 30 days",
+    "table_title": "Current Status",
+    "col_topic": "Topic",
+    "col_repos": "Repos",
+    "col_stars": "Total Stars",
+    "col_7d": "+7d repos",
+    "col_30d": "+30d %",
+    "col_status": "Status",
+    "repos_suffix": "repos",
+    "how_title": "How lifecycle status is determined",
+    "how_desc": "Status is based on 30-day repo count growth rate:",
+    "how_note": "These thresholds are provisional. They will be recalibrated as more data accumulates.",
+    "no_data": "Not enough data yet — check back after the first snapshot runs.",
+    "tooltip_repos": "{count} repos"
+  },
+  "Trends": {
+    "title": "Trend Velocity",
+    "sub": "Stars are a signal of interest, not quality. Velocity shows where attention is moving.",
+    "rising_title": "Rising This Week",
+    "rising_sub": "Fastest 7-day star velocity across all topics",
+    "fastest_title": "{topic} — Fastest Growing",
+    "fastest_sub": "Top 5 by 7-day velocity in this topic",
+    "empty": "No velocity data yet. Run the crawl + snapshot crons to populate.",
+    "formula_title": "Velocity formula",
+    "formula_1": "velocity_7d  = stars_now − stars_7days_ago",
+    "formula_2": "velocity_30d = stars_now − stars_30days_ago",
+    "formula_3": "acceleration = velocity_7d(this week) − velocity_7d(last week)",
+    "formula_note": "Requires at least one day of snapshot history. Low-star repos with high velocity are intentionally surfaced — early signals matter."
+  }
+}
