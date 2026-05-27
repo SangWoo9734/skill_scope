@@ -27,15 +27,15 @@ const FILE_LABELS: Record<string, string> = {
 export default function DetectedConventions({ files }: DetectedConventionsProps) {
   if (files.length === 0) {
     return (
-      <div className="text-xs text-white/25 py-2">
-        No convention files detected in this repo's root.
+      <div className="text-xs text-faint py-2">
+        No convention files detected in this repo&apos;s root.
       </div>
     )
   }
 
   return (
     <div className="space-y-2">
-      <p className="text-xs text-white/30">
+      <p className="text-xs text-faint">
         Also found in this repo:
       </p>
       <div className="flex flex-wrap gap-2">
@@ -49,7 +49,7 @@ export default function DetectedConventions({ files }: DetectedConventionsProps)
           </div>
         ))}
       </div>
-      <p className="text-xs text-white/20 pt-1">
+      <p className="text-xs text-faint pt-1">
         Convention co-occurrence analysis coming soon — tracking which files appear together.
       </p>
     </div>

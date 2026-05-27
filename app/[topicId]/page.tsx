@@ -36,7 +36,6 @@ export default async function TopicPage({ params, searchParams }: Props) {
 
   const stats = await getTopicStats(topicId)
 
-  // velocity_7d sort uses enriched velocity data
   let repos: (Repo | RepoWithVelocity)[]
   if (sort === 'velocity_7d') {
     repos = await getReposWithVelocity(topicId, limit)
@@ -56,11 +55,11 @@ export default async function TopicPage({ params, searchParams }: Props) {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">{topic.label}</h1>
-          <p className="text-white/40 text-sm mt-1">{topic.description}</p>
+          <h1 className="text-2xl font-bold text-foreground">{topic.label}</h1>
+          <p className="text-muted text-sm mt-1">{topic.description}</p>
           <div className="flex items-center gap-3 mt-2">
-            <span className="text-xs text-white/25">{stats.repo_count.toLocaleString()} repos</span>
-            <span className="text-white/10">·</span>
+            <span className="text-xs text-faint">{stats.repo_count.toLocaleString()} repos</span>
+            <span className="text-faint opacity-40">·</span>
             <span className="text-xs text-amber-400/60">★ {stats.total_stars.toLocaleString()} total</span>
           </div>
         </div>
@@ -76,8 +75,8 @@ export default async function TopicPage({ params, searchParams }: Props) {
               href={buildUrl(topicId, { sort, category: cat, page: '1' })}
               className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 category === cat
-                  ? 'bg-white/10 text-white'
-                  : 'text-white/40 hover:text-white/60 hover:bg-white/[0.05]'
+                  ? 'bg-active text-foreground'
+                  : 'text-muted hover:text-sub hover:bg-surf-hi'
               }`}
             >
               {cat === 'all' ? 'All' : cat}
@@ -87,7 +86,7 @@ export default async function TopicPage({ params, searchParams }: Props) {
 
         {/* Sort */}
         <div className="flex items-center gap-2 sm:ml-auto shrink-0">
-          <span className="text-xs text-white/30">Sort:</span>
+          <span className="text-xs text-faint">Sort:</span>
           {SORT_OPTIONS.map((opt) => (
             <Link
               key={opt.value}
@@ -95,7 +94,7 @@ export default async function TopicPage({ params, searchParams }: Props) {
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 sort === opt.value
                   ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                  : 'text-white/40 hover:text-white/60 hover:bg-white/[0.05]'
+                  : 'text-muted hover:text-sub hover:bg-surf-hi'
               }`}
             >
               {opt.label}
@@ -106,7 +105,7 @@ export default async function TopicPage({ params, searchParams }: Props) {
 
       {/* Repo grid */}
       {repos.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-white/10 p-12 text-center text-white/30 text-sm">
+        <div className="rounded-xl border border-dashed border-rim p-12 text-center text-muted text-sm">
           No repos found. Try a different filter or run the crawl cron.
         </div>
       ) : (
@@ -119,14 +118,14 @@ export default async function TopicPage({ params, searchParams }: Props) {
 
       {/* Pagination */}
       <div className="flex items-center justify-between pt-2">
-        <p className="text-xs text-white/30">
+        <p className="text-xs text-faint">
           Showing {offset + 1}–{offset + repos.length} of {stats.repo_count.toLocaleString()}
         </p>
         <div className="flex gap-2">
           {currentPage > 1 && (
             <Link
               href={buildUrl(topicId, { sort, category, page: String(currentPage - 1) })}
-              className="px-4 py-2 rounded-lg text-sm text-white/50 hover:text-white hover:bg-white/[0.06] border border-white/[0.06] transition-all"
+              className="px-4 py-2 rounded-lg text-sm text-muted hover:text-foreground hover:bg-surf-hi border border-rim transition-all"
             >
               ← Prev
             </Link>
@@ -134,7 +133,7 @@ export default async function TopicPage({ params, searchParams }: Props) {
           {hasMore && (
             <Link
               href={buildUrl(topicId, { sort, category, page: String(currentPage + 1) })}
-              className="px-4 py-2 rounded-lg text-sm text-white/50 hover:text-white hover:bg-white/[0.06] border border-white/[0.06] transition-all"
+              className="px-4 py-2 rounded-lg text-sm text-muted hover:text-foreground hover:bg-surf-hi border border-rim transition-all"
             >
               Next →
             </Link>

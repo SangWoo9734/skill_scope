@@ -44,8 +44,8 @@ export default async function LifecyclePage() {
     <div className="space-y-10">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Topic Lifecycle</h1>
-        <p className="mt-1 text-white/40 text-sm">
+        <h1 className="text-2xl font-bold text-foreground">Topic Lifecycle</h1>
+        <p className="mt-1 text-muted text-sm">
           Which AI-native development conventions are emerging, growing, or plateauing?
         </p>
       </div>
@@ -55,19 +55,19 @@ export default async function LifecyclePage() {
         {topicsWithStats.map((topic) => (
           <div
             key={topic.id}
-            className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4"
+            className="rounded-xl border border-rim bg-surface p-4"
             style={{ borderLeftColor: STATUS_COLORS[topic.status], borderLeftWidth: 3 }}
           >
-            <p className="text-xs text-white/40 font-medium">{topic.label}</p>
-            <p className="text-xl font-bold text-white mt-1">
+            <p className="text-xs text-muted font-medium">{topic.label}</p>
+            <p className="text-xl font-bold text-foreground mt-1">
               {topic.repo_count.toLocaleString()}
             </p>
-            <p className="text-xs text-white/30">repos</p>
+            <p className="text-xs text-faint">repos</p>
             <div className="mt-2 flex items-center gap-2">
               <span className={`text-xs px-1.5 py-0.5 rounded border ${STATUS_BG[topic.status]}`}>
                 {STATUS_LABELS[topic.status]}
               </span>
-              <span className="text-xs text-white/30">
+              <span className="text-xs text-faint">
                 {topic.velocity_30d_pct > 0 ? '+' : ''}
                 {topic.velocity_30d_pct.toFixed(1)}%
               </span>
@@ -78,37 +78,37 @@ export default async function LifecyclePage() {
 
       {/* 90-day chart */}
       <section>
-        <h2 className="font-semibold text-white mb-1">90-Day Repo Growth</h2>
-        <p className="text-xs text-white/35 mb-4">
+        <h2 className="font-semibold text-foreground mb-1">90-Day Repo Growth</h2>
+        <p className="text-xs text-faint mb-4">
           Total repos per topic — cumulative count over 90 days
         </p>
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+        <div className="rounded-xl border border-rim bg-surface p-4">
           <LifecycleChart data={chartData90} topics={ACTIVE_TOPICS} height={340} />
         </div>
       </section>
 
       {/* 30-day chart */}
       <section>
-        <h2 className="font-semibold text-white mb-1">30-Day Detail</h2>
-        <p className="text-xs text-white/35 mb-4">Zoomed view of the last 30 days</p>
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+        <h2 className="font-semibold text-foreground mb-1">30-Day Detail</h2>
+        <p className="text-xs text-faint mb-4">Zoomed view of the last 30 days</p>
+        <div className="rounded-xl border border-rim bg-surface p-4">
           <LifecycleChart data={chartData30} topics={ACTIVE_TOPICS} height={280} />
         </div>
       </section>
 
       {/* Status table */}
       <section>
-        <h2 className="font-semibold text-white mb-4">Current Status</h2>
-        <div className="rounded-xl border border-white/[0.06] overflow-hidden">
+        <h2 className="font-semibold text-foreground mb-4">Current Status</h2>
+        <div className="rounded-xl border border-rim overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/[0.06] bg-white/[0.02]">
-                <th className="text-left px-4 py-3 text-white/40 font-medium">Topic</th>
-                <th className="text-right px-4 py-3 text-white/40 font-medium">Repos</th>
-                <th className="text-right px-4 py-3 text-white/40 font-medium">Total Stars</th>
-                <th className="text-right px-4 py-3 text-white/40 font-medium">+7d repos</th>
-                <th className="text-right px-4 py-3 text-white/40 font-medium">+30d %</th>
-                <th className="text-right px-4 py-3 text-white/40 font-medium">Status</th>
+              <tr className="border-b border-rim bg-surface">
+                <th className="text-left px-4 py-3 text-muted font-medium">Topic</th>
+                <th className="text-right px-4 py-3 text-muted font-medium">Repos</th>
+                <th className="text-right px-4 py-3 text-muted font-medium">Total Stars</th>
+                <th className="text-right px-4 py-3 text-muted font-medium">+7d repos</th>
+                <th className="text-right px-4 py-3 text-muted font-medium">+30d %</th>
+                <th className="text-right px-4 py-3 text-muted font-medium">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -117,16 +117,16 @@ export default async function LifecyclePage() {
                 return (
                   <tr
                     key={topic.id}
-                    className={`border-b border-white/[0.04] ${i % 2 === 0 ? '' : 'bg-white/[0.01]'}`}
+                    className={`border-b border-line ${i % 2 === 0 ? '' : 'bg-surface'}`}
                   >
                     <td className="px-4 py-3">
-                      <p className="font-medium text-white">{topic.label}</p>
-                      <p className="text-xs text-white/30">{topic.description}</p>
+                      <p className="font-medium text-foreground">{topic.label}</p>
+                      <p className="text-xs text-faint">{topic.description}</p>
                     </td>
-                    <td className="px-4 py-3 text-right text-white/70">
+                    <td className="px-4 py-3 text-right text-sub">
                       {topic.repo_count.toLocaleString()}
                     </td>
-                    <td className="px-4 py-3 text-right text-white/70">
+                    <td className="px-4 py-3 text-right text-sub">
                       {topic.total_stars.toLocaleString()}
                     </td>
                     <td className="px-4 py-3 text-right text-emerald-400">
@@ -134,7 +134,7 @@ export default async function LifecyclePage() {
                         ? `+${t.velocity_7d_count}`
                         : '—'}
                     </td>
-                    <td className="px-4 py-3 text-right text-white/60">
+                    <td className="px-4 py-3 text-right text-muted">
                       {topic.velocity_30d_pct > 0 ? '+' : ''}
                       {topic.velocity_30d_pct.toFixed(1)}%
                     </td>
@@ -154,8 +154,8 @@ export default async function LifecyclePage() {
       </section>
 
       {/* Methodology note */}
-      <section className="rounded-xl border border-white/[0.05] bg-white/[0.01] p-5 text-xs text-white/30 space-y-1">
-        <p className="font-medium text-white/40">How lifecycle status is determined</p>
+      <section className="rounded-xl border border-line bg-surface p-5 text-xs text-faint space-y-1">
+        <p className="font-medium text-muted">How lifecycle status is determined</p>
         <p>Status is based on 30-day repo count growth rate:</p>
         <ul className="mt-1 space-y-0.5 pl-3">
           <li><span className="text-emerald-400">Emerging</span> — &gt;+20% / month</li>

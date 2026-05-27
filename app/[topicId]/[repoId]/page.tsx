@@ -3,7 +3,8 @@ import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import { getTopicById } from '@/lib/topics'
 import { getRepoById, getRepoSnapshots, getReposByTopic } from '@/lib/supabase'
-import { buildStarChartData, STATUS_BG } from '@/lib/lifecycle'
+import { buildStarChartData } from '@/lib/lifecycle'
+import { stripMarkdown } from '@/lib/utils'
 import TrendChart from '@/components/TrendChart'
 import DetectedConventions from '@/components/DetectedConventions'
 import RepoCard from '@/components/RepoCard'
@@ -29,7 +30,6 @@ export default async function RepoDetailPage({ params }: Props) {
 
   const starChartData = buildStarChartData(snapshots)
 
-  // Similar repos (same topic + category)
   const similar = await getReposByTopic(topicId, {
     category: repo.category ?? undefined,
     limit: 4,
@@ -48,32 +48,32 @@ export default async function RepoDetailPage({ params }: Props) {
   return (
     <div className="space-y-8 max-w-3xl">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-xs text-white/30">
-        <Link href="/" className="hover:text-white/60 transition-colors">Home</Link>
+      <nav className="flex items-center gap-2 text-xs text-faint">
+        <Link href="/" className="hover:text-muted transition-colors">Home</Link>
         <span>/</span>
-        <Link href={`/${topicId}`} className="hover:text-white/60 transition-colors">
+        <Link href={`/${topicId}`} className="hover:text-muted transition-colors">
           {topic.label}
         </Link>
         <span>/</span>
-        <span className="text-white/50">{repo.owner}/{repo.repo}</span>
+        <span className="text-muted">{repo.owner}/{repo.repo}</span>
       </nav>
 
       {/* Header */}
       <div className="space-y-3">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-xl font-bold text-white">
-              <span className="text-white/40">{repo.owner}/</span>{repo.repo}
+            <h1 className="text-xl font-bold text-foreground">
+              <span className="text-faint">{repo.owner}/</span>{repo.repo}
             </h1>
             {repo.name && repo.name !== repo.repo && (
-              <p className="text-sm text-white/40 mt-0.5">{repo.name}</p>
+              <p className="text-sm text-faint mt-0.5">{repo.name}</p>
             )}
           </div>
           <a
             href={repo.github_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 flex items-center gap-2 px-4 py-2 rounded-lg border border-white/10 text-sm text-white/60 hover:text-white hover:border-white/20 transition-all"
+            className="shrink-0 flex items-center gap-2 px-4 py-2 rounded-lg border border-rim text-sm text-muted hover:text-foreground hover:border-rim-hi transition-all"
           >
             <GithubIcon />
             GitHub
@@ -81,13 +81,15 @@ export default async function RepoDetailPage({ params }: Props) {
         </div>
 
         {repo.description && (
-          <p className="text-white/55 leading-relaxed">{repo.description}</p>
+          <p className="text-sub leading-relaxed">
+            {stripMarkdown(repo.description)}
+          </p>
         )}
 
         {/* Tags */}
         <div className="flex items-center gap-2 flex-wrap">
           {repo.category && (
-            <span className="text-xs px-2.5 py-1 rounded-full border border-white/[0.08] bg-white/[0.04] text-white/50">
+            <span className="text-xs px-2.5 py-1 rounded-full border border-rim bg-surface text-muted">
               {repo.category}
             </span>
           )}
@@ -124,35 +126,35 @@ export default async function RepoDetailPage({ params }: Props) {
 
       {/* Star history chart */}
       <section>
-        <h2 className="font-semibold text-white mb-3">Star History (30 days)</h2>
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+        <h2 className="font-semibold text-foreground mb-3">Star History (30 days)</h2>
+        <div className="rounded-xl border border-rim bg-surface p-4">
           <TrendChart data={starChartData} height={220} />
         </div>
       </section>
 
       {/* Detected conventions */}
       <section>
-        <h2 className="font-semibold text-white mb-3">Detected Conventions</h2>
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
+        <h2 className="font-semibold text-foreground mb-3">Detected Conventions</h2>
+        <div className="rounded-xl border border-rim bg-surface p-5">
           <DetectedConventions files={repo.detected_files ?? []} />
         </div>
       </section>
 
-      {/* Structure score (if available) */}
+      {/* Structure score */}
       {repo.structure_score !== null && repo.structure_score !== undefined && (
         <section>
-          <h2 className="font-semibold text-white mb-3">Structure Score</h2>
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
+          <h2 className="font-semibold text-foreground mb-3">Structure Score</h2>
+          <div className="rounded-xl border border-rim bg-surface p-5">
             <div className="flex items-center gap-4">
-              <div className="text-3xl font-bold text-white">{repo.structure_score}</div>
+              <div className="text-3xl font-bold text-foreground">{repo.structure_score}</div>
               <div className="flex-1">
-                <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                <div className="h-2 rounded-full bg-surf-hi overflow-hidden">
                   <div
                     className="h-full rounded-full bg-blue-500 transition-all"
                     style={{ width: `${repo.structure_score}%` }}
                   />
                 </div>
-                <p className="text-xs text-white/30 mt-1.5">
+                <p className="text-xs text-faint mt-1.5">
                   Spec compliance score — measures structure, not quality.
                   Has frontmatter, name, description, examples, and instructions.
                 </p>
@@ -166,7 +168,7 @@ export default async function RepoDetailPage({ params }: Props) {
       {similarFiltered.length > 0 && (
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-semibold text-white">More in {repo.category ?? topic.label}</h2>
+            <h2 className="font-semibold text-foreground">More in {repo.category ?? topic.label}</h2>
             <Link
               href={`/${topicId}${repo.category ? `?category=${encodeURIComponent(repo.category)}` : ''}`}
               className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
@@ -189,7 +191,7 @@ function StatItem({
   label,
   value,
   icon,
-  valueClass = 'text-white',
+  valueClass = 'text-foreground',
 }: {
   label: string
   value: string
@@ -197,8 +199,8 @@ function StatItem({
   valueClass?: string
 }) {
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-      <p className="text-white/30 text-xs">{icon} {label}</p>
+    <div className="rounded-xl border border-rim bg-surface p-4">
+      <p className="text-faint text-xs">{icon} {label}</p>
       <p className={`text-lg font-semibold mt-1 ${valueClass}`}>{value}</p>
     </div>
   )

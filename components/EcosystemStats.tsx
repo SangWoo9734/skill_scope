@@ -14,9 +14,9 @@ export default function EcosystemStats({ topics, headline }: EcosystemStatsProps
   return (
     <div className="space-y-6">
       {/* Headline */}
-      <div className="rounded-xl border border-white/[0.06] bg-gradient-to-br from-blue-500/5 to-emerald-500/5 p-6">
-        <p className="text-lg font-medium text-white/80 leading-snug">{headline}</p>
-        <p className="mt-1 text-xs text-white/30">
+      <div className="rounded-xl border border-rim bg-gradient-to-br from-blue-500/5 to-emerald-500/5 p-6">
+        <p className="text-lg font-medium text-sub leading-snug">{headline}</p>
+        <p className="mt-1 text-xs text-faint">
           Stars = interest signal, not usage. Updated daily.
         </p>
       </div>
@@ -37,7 +37,7 @@ export default function EcosystemStats({ topics, headline }: EcosystemStatsProps
 
       {/* Per-topic cards */}
       <div className="space-y-2">
-        <p className="text-xs font-medium text-white/30 uppercase tracking-wider px-1">
+        <p className="text-xs font-medium text-faint uppercase tracking-wider px-1">
           By Topic
         </p>
         {activeTopics.map((topic) => (
@@ -58,10 +58,10 @@ function StatCard({
   sub: string
 }) {
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4">
-      <p className="text-2xl font-bold text-white">{value}</p>
-      <p className="text-xs font-medium text-white/50 mt-0.5">{label}</p>
-      <p className="text-xs text-white/25 mt-0.5">{sub}</p>
+    <div className="rounded-xl border border-rim bg-surface p-4">
+      <p className="text-2xl font-bold text-foreground">{value}</p>
+      <p className="text-xs font-medium text-muted mt-0.5">{label}</p>
+      <p className="text-xs text-faint mt-0.5">{sub}</p>
     </div>
   )
 }
@@ -73,15 +73,15 @@ function TopicRow({ topic }: { topic: TopicWithStats }) {
       : `${topic.velocity_30d_pct.toFixed(1)}%`
 
   return (
-    <div className="flex items-center justify-between rounded-lg border border-white/[0.05] bg-white/[0.02] px-4 py-3">
+    <div className="flex items-center justify-between rounded-lg border border-line bg-surface px-4 py-3">
       <div className="flex items-center gap-3">
         <div className="min-w-0">
-          <p className="text-sm font-medium text-white/80">{topic.label}</p>
-          <p className="text-xs text-white/30">{topic.repo_count.toLocaleString()} repos</p>
+          <p className="text-sm font-medium text-sub">{topic.label}</p>
+          <p className="text-xs text-faint">{topic.repo_count.toLocaleString()} repos</p>
         </div>
       </div>
       <div className="flex items-center gap-3 shrink-0">
-        <span className="text-xs text-white/40">{velStr} / 30d</span>
+        <span className="text-xs text-muted">{velStr} / 30d</span>
         <span
           className={`text-xs px-2 py-0.5 rounded-full border font-medium ${STATUS_BG[topic.status]}`}
         >

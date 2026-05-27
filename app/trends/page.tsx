@@ -1,11 +1,10 @@
-import { ACTIVE_TOPICS, getTopicById } from '@/lib/topics'
+import { ACTIVE_TOPICS } from '@/lib/topics'
 import { getReposWithVelocity, getRisingRepos } from '@/lib/supabase'
 import RepoCard from '@/components/RepoCard'
 
 export const dynamic = 'force-dynamic'
 
 export default async function TrendsPage() {
-  // Rising overall + per-topic fastest growing
   const [risingAll, ...topicVelocities] = await Promise.all([
     getRisingRepos(10),
     ...ACTIVE_TOPICS.map((t) => getReposWithVelocity(t.id, 5)),
@@ -15,8 +14,8 @@ export default async function TrendsPage() {
     <div className="space-y-10">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Trend Velocity</h1>
-        <p className="mt-1 text-white/40 text-sm">
+        <h1 className="text-2xl font-bold text-foreground">Trend Velocity</h1>
+        <p className="mt-1 text-muted text-sm">
           Stars are a signal of interest, not quality. Velocity shows where attention is moving.
         </p>
       </div>
@@ -24,8 +23,8 @@ export default async function TrendsPage() {
       {/* Rising this week */}
       <section>
         <div className="mb-4">
-          <h2 className="font-semibold text-white">Rising This Week</h2>
-          <p className="text-xs text-white/35 mt-0.5">
+          <h2 className="font-semibold text-foreground">Rising This Week</h2>
+          <p className="text-xs text-faint mt-0.5">
             Fastest 7-day star velocity across all topics
           </p>
         </div>
@@ -46,8 +45,8 @@ export default async function TrendsPage() {
         return (
           <section key={topic.id}>
             <div className="mb-4">
-              <h2 className="font-semibold text-white">{topic.label} — Fastest Growing</h2>
-              <p className="text-xs text-white/35 mt-0.5">
+              <h2 className="font-semibold text-foreground">{topic.label} — Fastest Growing</h2>
+              <p className="text-xs text-faint mt-0.5">
                 Top 5 by 7-day velocity in this topic
               </p>
             </div>
@@ -65,9 +64,9 @@ export default async function TrendsPage() {
       })}
 
       {/* Methodology */}
-      <section className="rounded-xl border border-white/[0.05] bg-white/[0.01] p-5 text-xs text-white/30 space-y-1">
-        <p className="font-medium text-white/40">Velocity formula</p>
-        <div className="font-mono space-y-0.5 mt-1 text-white/40">
+      <section className="rounded-xl border border-line bg-surface p-5 text-xs text-faint space-y-1">
+        <p className="font-medium text-muted">Velocity formula</p>
+        <div className="font-mono space-y-0.5 mt-1 text-muted">
           <p>velocity_7d  = stars_now − stars_7days_ago</p>
           <p>velocity_30d = stars_now − stars_30days_ago</p>
           <p>acceleration = velocity_7d(this week) − velocity_7d(last week)</p>
@@ -83,7 +82,7 @@ export default async function TrendsPage() {
 
 function EmptyState() {
   return (
-    <div className="rounded-xl border border-dashed border-white/10 p-8 text-center text-white/30 text-sm">
+    <div className="rounded-xl border border-dashed border-rim p-8 text-center text-muted text-sm">
       No velocity data yet. Run the crawl + snapshot crons to populate.
     </div>
   )

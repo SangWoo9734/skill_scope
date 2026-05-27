@@ -10,14 +10,16 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
+import { useTheme } from 'next-themes'
+import { useEffect, useState } from 'react'
 import type { LifecycleChartPoint } from '@/lib/lifecycle'
 import type { Topic } from '@/types'
 
 const TOPIC_COLORS: Record<string, string> = {
-  skills: '#3b82f6',    // blue
-  claudemd: '#10b981',  // emerald
-  agentsmd: '#f59e0b',  // amber
-  mcpjson: '#8b5cf6',   // violet
+  skills:      '#3b82f6', // blue
+  claudemd:    '#10b981', // emerald
+  agentsmd:    '#f59e0b', // amber
+  mcpjson:     '#8b5cf6', // violet
   cursorrules: '#ec4899', // pink
 }
 
@@ -27,16 +29,36 @@ interface LifecycleChartProps {
   height?: number
 }
 
+function useChartColors() {
+  const { resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
+  const dark = !mounted || resolvedTheme === 'dark'
+  return {
+    grid:         dark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.07)',
+    tick:         dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.40)',
+    axisLine:     dark ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.12)',
+    tooltipBg:    dark ? '#0f1117'                : '#ffffff',
+    tooltipBord:  dark ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.10)',
+    tooltipText:  dark ? 'rgba(255,255,255,0.80)' : 'rgba(15,23,42,0.85)',
+    tooltipLabel: dark ? 'rgba(255,255,255,0.50)' : 'rgba(15,23,42,0.50)',
+    legend:       dark ? 'rgba(255,255,255,0.50)' : 'rgba(15,23,42,0.50)',
+  }
+}
+
 export default function LifecycleChart({
   data,
   topics,
   height = 320,
 }: LifecycleChartProps) {
+  const c = useChartColors()
+
   if (data.length === 0) {
     return (
       <div
         style={{ height }}
-        className="flex items-center justify-center text-white/30 text-sm"
+        className="flex items-center justify-center text-muted text-sm"
       >
         Not enough data yet — check back after the first snapshot runs.
       </div>
@@ -46,29 +68,29 @@ export default function LifecycleChart({
   return (
     <ResponsiveContainer width="100%" height={height}>
       <LineChart data={data} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+        <CartesianGrid strokeDasharray="3 3" stroke={c.grid} />
         <XAxis
           dataKey="date"
-          tick={{ fill: 'rgba(255,255,255,0.35)', fontSize: 11 }}
-          axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
+          tick={{ fill: c.tick, fontSize: 11 }}
+          axisLine={{ stroke: c.axisLine }}
           tickLine={false}
           interval="preserveStartEnd"
         />
         <YAxis
-          tick={{ fill: 'rgba(255,255,255,0.35)', fontSize: 11 }}
+          tick={{ fill: c.tick, fontSize: 11 }}
           axisLine={false}
           tickLine={false}
           width={36}
         />
         <Tooltip
           contentStyle={{
-            backgroundColor: '#0f1117',
-            border: '1px solid rgba(255,255,255,0.1)',
+            backgroundColor: c.tooltipBg,
+            border: `1px solid ${c.tooltipBord}`,
             borderRadius: '8px',
             fontSize: '12px',
-            color: 'rgba(255,255,255,0.8)',
+            color: c.tooltipText,
           }}
-          labelStyle={{ color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}
+          labelStyle={{ color: c.tooltipLabel, marginBottom: 4 }}
           itemStyle={{ padding: '2px 0' }}
           formatter={(value, name) => [
             Number(value).toLocaleString() + ' repos',
@@ -77,7 +99,7 @@ export default function LifecycleChart({
         />
         <Legend
           formatter={(value) => topics.find((t) => t.id === value)?.label ?? value}
-          wrapperStyle={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}
+          wrapperStyle={{ fontSize: '12px', color: c.legend }}
         />
         {topics.map((topic) => (
           <Line

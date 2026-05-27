@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import TopicTabs from '@/components/TopicTabs'
+import ThemeProvider from '@/components/ThemeProvider'
+import ThemeToggle from '@/components/ThemeToggle'
 import { ACTIVE_TOPICS } from '@/lib/topics'
 import Link from 'next/link'
 
@@ -27,37 +29,47 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[#080a0f] text-white">
-        {/* Nav */}
-        <header className="sticky top-0 z-50 border-b border-white/[0.05] bg-[#080a0f]/90 backdrop-blur-sm">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6">
-            <div className="flex items-center gap-4 h-14">
-              <Link href="/" className="flex items-center gap-2 shrink-0">
-                <span className="font-bold text-white text-base tracking-tight">SkillScope</span>
-                <span className="hidden lg:inline text-xs text-white/25 font-normal mt-px">
-                  ecosystem intelligence
-                </span>
-              </Link>
-              <div className="flex-1 overflow-x-auto scrollbar-none">
-                <TopicTabs topics={ACTIVE_TOPICS} />
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
+      <body className="min-h-full flex flex-col bg-page text-foreground">
+        <ThemeProvider>
+          {/* Nav */}
+          <header
+            className="sticky top-0 z-50 border-b border-line backdrop-blur-sm"
+            style={{ background: 'var(--c-nav)' }}
+          >
+            <div className="max-w-6xl mx-auto px-4 sm:px-6">
+              <div className="flex items-center gap-4 h-14">
+                <Link href="/" className="flex items-center gap-2 shrink-0">
+                  <span className="font-bold text-foreground text-base tracking-tight">SkillScope</span>
+                  <span className="hidden lg:inline text-xs text-faint font-normal mt-px">
+                    ecosystem intelligence
+                  </span>
+                </Link>
+                <div className="flex-1 overflow-x-auto scrollbar-none">
+                  <TopicTabs topics={ACTIVE_TOPICS} />
+                </div>
+                <ThemeToggle />
               </div>
             </div>
-          </div>
-        </header>
+          </header>
 
-        {/* Main */}
-        <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-8">
-          {children}
-        </main>
+          {/* Main */}
+          <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-8">
+            {children}
+          </main>
 
-        {/* Footer */}
-        <footer className="border-t border-white/[0.05] py-6">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between text-xs text-white/25">
-            <span>SkillScope · Stars = interest signal, not usage</span>
-            <span>Data from GitHub Search API</span>
-          </div>
-        </footer>
+          {/* Footer */}
+          <footer className="border-t border-line py-6">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between text-xs text-faint">
+              <span>SkillScope · Stars = interest signal, not usage</span>
+              <span>Data from GitHub Search API</span>
+            </div>
+          </footer>
+        </ThemeProvider>
       </body>
     </html>
   )

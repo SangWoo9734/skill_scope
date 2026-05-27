@@ -10,7 +10,6 @@ interface TopicTabsProps {
 
 export default function TopicTabs({ topics }: TopicTabsProps) {
   const pathname = usePathname()
-
   const activeTopics = topics.filter((t) => t.active)
 
   return (
@@ -48,8 +47,8 @@ function TabLink({
       href={href}
       className={`whitespace-nowrap px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
         isActive
-          ? 'bg-white/10 text-white'
-          : 'text-white/40 hover:text-white/70 hover:bg-white/[0.05]'
+          ? 'bg-active text-foreground'
+          : 'text-muted hover:text-sub hover:bg-surf-hi'
       }`}
     >
       {label}

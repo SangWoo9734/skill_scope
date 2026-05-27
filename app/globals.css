@@ -1,21 +1,105 @@
 @import "tailwindcss";
 
+/* ─── Theme variables ─────────────────────────────────────── */
+
 :root {
-  --background: #080a0f;
-  --foreground: #f0f0f0;
+  /* backgrounds */
+  --c-page:    #080a0f;
+  --c-nav:     rgba(8, 10, 15, 0.90);
+  --c-surface: rgba(255, 255, 255, 0.025);
+  --c-surf-hi: rgba(255, 255, 255, 0.055);
+  --c-active:  rgba(255, 255, 255, 0.10);
+
+  /* borders */
+  --c-line:   rgba(255, 255, 255, 0.05);
+  --c-rim:    rgba(255, 255, 255, 0.07);
+  --c-rim-hi: rgba(255, 255, 255, 0.13);
+
+  /* text */
+  --c-fg:    #ffffff;
+  --c-sub:   rgba(255, 255, 255, 0.70);
+  --c-muted: rgba(255, 255, 255, 0.45);
+  --c-faint: rgba(255, 255, 255, 0.28);
+
+  /* charts (passed as JS strings to Recharts) */
+  --c-chart-grd: rgba(255, 255, 255, 0.06);
+  --c-chart-tck: rgba(255, 255, 255, 0.35);
+  --c-chart-ax:  rgba(255, 255, 255, 0.10);
+  --c-tt-bg:     #0f1117;
+  --c-tt-bord:   rgba(255, 255, 255, 0.10);
+  --c-tt-text:   rgba(255, 255, 255, 0.80);
+  --c-tt-label:  rgba(255, 255, 255, 0.50);
+
+  /* legacy aliases */
+  --background: var(--c-page);
+  --foreground: var(--c-fg);
 }
+
+[data-theme="light"] {
+  /* backgrounds */
+  --c-page:    #f8fafc;
+  --c-nav:     rgba(248, 250, 252, 0.92);
+  --c-surface: rgba(0, 0, 0, 0.025);
+  --c-surf-hi: rgba(0, 0, 0, 0.05);
+  --c-active:  rgba(0, 0, 0, 0.08);
+
+  /* borders */
+  --c-line:   rgba(0, 0, 0, 0.07);
+  --c-rim:    rgba(0, 0, 0, 0.09);
+  --c-rim-hi: rgba(0, 0, 0, 0.16);
+
+  /* text */
+  --c-fg:    #0f172a;
+  --c-sub:   rgba(15, 23, 42, 0.75);
+  --c-muted: rgba(15, 23, 42, 0.55);
+  --c-faint: rgba(15, 23, 42, 0.38);
+
+  /* charts */
+  --c-chart-grd: rgba(0, 0, 0, 0.07);
+  --c-chart-tck: rgba(0, 0, 0, 0.40);
+  --c-chart-ax:  rgba(0, 0, 0, 0.12);
+  --c-tt-bg:     #ffffff;
+  --c-tt-bord:   rgba(0, 0, 0, 0.10);
+  --c-tt-text:   rgba(15, 23, 42, 0.85);
+  --c-tt-label:  rgba(15, 23, 42, 0.50);
+
+  /* legacy aliases */
+  --background: var(--c-page);
+  --foreground: var(--c-fg);
+}
+
+/* ─── Tailwind design tokens ──────────────────────────────── */
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* semantic tokens → available as Tailwind classes */
+  --color-page:    var(--c-page);
+  --color-surface: var(--c-surface);
+  --color-surf-hi: var(--c-surf-hi);
+  --color-active:  var(--c-active);
+  --color-line:    var(--c-line);
+  --color-rim:     var(--c-rim);
+  --color-rim-hi:  var(--c-rim-hi);
+  --color-sub:     var(--c-sub);
+  --color-muted:   var(--c-muted);
+  --color-faint:   var(--c-faint);
 }
 
+/* ─── Base styles ─────────────────────────────────────────── */
+
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--c-page);
+  color: var(--c-fg);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* smooth theme transitions (skip on first paint) */
+html.theme-ready * {
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.1s ease;
 }
 
 /* Hide scrollbars but keep functionality */

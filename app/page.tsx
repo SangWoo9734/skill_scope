@@ -57,11 +57,11 @@ export default async function HomePage() {
     <div className="space-y-12">
       {/* Hero */}
       <section>
-        <h1 className="text-2xl sm:text-3xl font-bold text-white leading-snug">
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-snug">
           Track the evolution of<br />
           <span className="text-blue-400">AI-native development conventions</span>
         </h1>
-        <p className="mt-3 text-white/45 max-w-xl leading-relaxed">
+        <p className="mt-3 text-muted max-w-xl leading-relaxed">
           Not which tools are &ldquo;best&rdquo; — but which conventions, workflows, and agent patterns
           are gaining momentum across the ecosystem.
         </p>
@@ -75,8 +75,8 @@ export default async function HomePage() {
           <section>
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="font-semibold text-white">Topic Lifecycle</h2>
-                <p className="text-xs text-white/35 mt-0.5">
+                <h2 className="font-semibold text-foreground">Topic Lifecycle</h2>
+                <p className="text-xs text-faint mt-0.5">
                   Repo count growth over time — 90 days
                 </p>
               </div>
@@ -87,8 +87,8 @@ export default async function HomePage() {
                 Full view →
               </Link>
             </div>
-            <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-              <Suspense fallback={<div className="h-64 animate-pulse bg-white/[0.03] rounded-lg" />}>
+            <div className="rounded-xl border border-rim bg-surface p-4">
+              <Suspense fallback={<div className="h-64 animate-pulse bg-surf-hi rounded-lg" />}>
                 <LifecycleChart data={chartData} topics={ACTIVE_TOPICS} height={260} />
               </Suspense>
             </div>
@@ -98,8 +98,8 @@ export default async function HomePage() {
           <section>
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="font-semibold text-white">Rising This Week</h2>
-                <p className="text-xs text-white/35 mt-0.5">
+                <h2 className="font-semibold text-foreground">Rising This Week</h2>
+                <p className="text-xs text-faint mt-0.5">
                   Fastest star velocity in the last 7 days
                 </p>
               </div>
@@ -133,20 +133,20 @@ export default async function HomePage() {
 
       {/* Topic quick links */}
       <section>
-        <h2 className="font-semibold text-white mb-4">Browse by Topic</h2>
+        <h2 className="font-semibold text-foreground mb-4">Browse by Topic</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {topicsWithStats.map((topic) => (
             <Link
               key={topic.id}
               href={`/${topic.id}`}
-              className="group rounded-xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/10 transition-all p-5"
+              className="group rounded-xl border border-rim bg-surface hover:bg-surf-hi hover:border-rim-hi transition-all p-5"
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="font-medium text-white group-hover:text-blue-400 transition-colors">
+                  <p className="font-medium text-foreground group-hover:text-blue-400 transition-colors">
                     {topic.label}
                   </p>
-                  <p className="text-xs text-white/40 mt-0.5">{topic.description}</p>
+                  <p className="text-xs text-muted mt-0.5">{topic.description}</p>
                 </div>
                 <span
                   className={`text-xs px-2 py-0.5 rounded-full border shrink-0 ml-3 ${STATUS_BG[topic.status]}`}
@@ -154,7 +154,7 @@ export default async function HomePage() {
                   {STATUS_LABELS[topic.status]}
                 </span>
               </div>
-              <div className="mt-3 flex items-center gap-4 text-xs text-white/35">
+              <div className="mt-3 flex items-center gap-4 text-xs text-faint">
                 <span>{topic.repo_count.toLocaleString()} repos</span>
                 <span>
                   {topic.velocity_30d_pct > 0 ? '+' : ''}
@@ -171,9 +171,9 @@ export default async function HomePage() {
 
 function EmptyState({ message, sub }: { message: string; sub?: string }) {
   return (
-    <div className="rounded-xl border border-dashed border-white/[0.08] p-10 text-center space-y-1">
-      <p className="text-white/30 text-sm">{message}</p>
-      {sub && <p className="text-white/20 text-xs">{sub}</p>}
+    <div className="rounded-xl border border-dashed border-rim p-10 text-center space-y-1">
+      <p className="text-muted text-sm">{message}</p>
+      {sub && <p className="text-faint text-xs">{sub}</p>}
     </div>
   )
 }

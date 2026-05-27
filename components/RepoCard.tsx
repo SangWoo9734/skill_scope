@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import type { RepoWithVelocity, Repo } from '@/types'
+import { stripMarkdown, formatNum } from '@/lib/utils'
 
 interface RepoCardProps {
   repo: Repo | RepoWithVelocity
@@ -9,23 +10,6 @@ interface RepoCardProps {
 
 function hasVelocity(r: Repo | RepoWithVelocity): r is RepoWithVelocity {
   return 'velocity_7d' in r
-}
-
-/** Strip markdown syntax for display */
-function stripMarkdown(text: string): string {
-  return text
-    .replace(/\*\*(.+?)\*\*/g, '$1')
-    .replace(/\*(.+?)\*/g, '$1')
-    .replace(/`(.+?)`/g, '$1')
-    .replace(/\[(.+?)\]\(.+?\)/g, '$1')
-    .replace(/#{1,6}\s+/g, '')
-    .replace(/\n+/g, ' ')
-    .trim()
-}
-
-function formatNum(n: number): string {
-  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`
-  return String(n)
 }
 
 export default function RepoCard({ repo, showVelocity = true }: RepoCardProps) {
@@ -41,17 +25,17 @@ export default function RepoCard({ repo, showVelocity = true }: RepoCardProps) {
   return (
     <Link
       href={`/${repo.topic_id}/${repo.id}`}
-      className="group flex flex-col rounded-xl border border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/10 transition-all duration-200 p-5 gap-3"
+      className="group flex flex-col rounded-xl border border-rim bg-surface hover:bg-surf-hi hover:border-rim-hi transition-all duration-200 p-5 gap-3"
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <p className="text-xs text-white/35 font-mono truncate">{repo.owner}/</p>
-          <p className="font-semibold text-white group-hover:text-blue-400 transition-colors truncate leading-snug">
+          <p className="text-xs text-faint font-mono truncate">{repo.owner}/</p>
+          <p className="font-semibold text-foreground group-hover:text-blue-400 transition-colors truncate leading-snug">
             {repo.repo}
           </p>
           {repo.name && repo.name !== repo.repo && (
-            <p className="text-xs text-white/35 truncate mt-0.5">{repo.name}</p>
+            <p className="text-xs text-faint truncate mt-0.5">{repo.name}</p>
           )}
         </div>
 
@@ -64,7 +48,7 @@ export default function RepoCard({ repo, showVelocity = true }: RepoCardProps) {
 
       {/* Description */}
       {displayDesc && (
-        <p className="text-sm text-white/45 line-clamp-2 leading-relaxed flex-1">
+        <p className="text-sm text-muted line-clamp-2 leading-relaxed flex-1">
           {displayDesc}
         </p>
       )}
@@ -72,7 +56,7 @@ export default function RepoCard({ repo, showVelocity = true }: RepoCardProps) {
       {/* Tags */}
       <div className="flex items-center gap-1.5 flex-wrap">
         {repo.category && (
-          <span className="text-xs px-2 py-0.5 rounded-full bg-white/[0.05] text-white/35 border border-white/[0.07]">
+          <span className="text-xs px-2 py-0.5 rounded-full bg-surf-hi text-faint border border-rim">
             {repo.category}
           </span>
         )}
@@ -89,7 +73,7 @@ export default function RepoCard({ repo, showVelocity = true }: RepoCardProps) {
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between text-xs text-white/25 border-t border-white/[0.05] pt-2.5">
+      <div className="flex items-center justify-between text-xs text-faint border-t border-line pt-2.5">
         <div className="flex items-center gap-3">
           {commitLabel && <span>{commitLabel}</span>}
           {repo.forks > 0 && <span>{formatNum(repo.forks)} forks</span>}
