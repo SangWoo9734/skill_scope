@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getTopicById } from '@/lib/topics'
-import { getReposByTopic, getTopicStats } from '@/lib/supabase'
+import { getReposByTopic, getTopicStats, getReposWithVelocity } from '@/lib/supabase'
 import RepoCard from '@/components/RepoCard'
-import type { CategoryOption, SortOption } from '@/types'
+import type { CategoryOption, SortOption, Repo, RepoWithVelocity } from '@/types'
 
 export const dynamic = 'force-dynamic'
 
@@ -34,17 +34,22 @@ export default async function TopicPage({ params, searchParams }: Props) {
   const limit = 24
   const offset = (currentPage - 1) * limit
 
-  const [repos, stats] = await Promise.all([
-    getReposByTopic(topicId, {
+  const stats = await getTopicStats(topicId)
+
+  // velocity_7d sort uses enriched velocity data
+  let repos: (Repo | RepoWithVelocity)[]
+  if (sort === 'velocity_7d') {
+    repos = await getReposWithVelocity(topicId, limit)
+  } else {
+    repos = await getReposByTopic(topicId, {
       sort: sort as SortOption,
       category: category !== 'all' ? category : undefined,
       limit,
       offset,
-    }),
-    getTopicStats(topicId),
-  ])
+    })
+  }
 
-  const hasMore = offset + repos.length < stats.repo_count
+  const hasMore = sort !== 'velocity_7d' && offset + repos.length < stats.repo_count
 
   return (
     <div className="space-y-8">
@@ -53,9 +58,11 @@ export default async function TopicPage({ params, searchParams }: Props) {
         <div>
           <h1 className="text-2xl font-bold text-white">{topic.label}</h1>
           <p className="text-white/40 text-sm mt-1">{topic.description}</p>
-          <p className="text-xs text-white/25 mt-2">
-            {stats.repo_count.toLocaleString()} repos · {stats.total_stars.toLocaleString()} total stars
-          </p>
+          <div className="flex items-center gap-3 mt-2">
+            <span className="text-xs text-white/25">{stats.repo_count.toLocaleString()} repos</span>
+            <span className="text-white/10">·</span>
+            <span className="text-xs text-amber-400/60">★ {stats.total_stars.toLocaleString()} total</span>
+          </div>
         </div>
       </div>
 

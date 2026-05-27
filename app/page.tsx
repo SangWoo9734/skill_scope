@@ -111,7 +111,10 @@ export default async function HomePage() {
               </Link>
             </div>
             {risingRepos.length === 0 ? (
-              <EmptyState message="No velocity data yet — run the snapshot cron to populate." />
+              <EmptyState
+                message="Velocity data accumulates over time"
+                sub="Snapshots are saved daily — trending repos will appear tomorrow"
+              />
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {risingRepos.map((repo) => (
@@ -166,10 +169,11 @@ export default async function HomePage() {
   )
 }
 
-function EmptyState({ message }: { message: string }) {
+function EmptyState({ message, sub }: { message: string; sub?: string }) {
   return (
-    <div className="rounded-xl border border-dashed border-white/10 p-8 text-center text-white/30 text-sm">
-      {message}
+    <div className="rounded-xl border border-dashed border-white/[0.08] p-10 text-center space-y-1">
+      <p className="text-white/30 text-sm">{message}</p>
+      {sub && <p className="text-white/20 text-xs">{sub}</p>}
     </div>
   )
 }

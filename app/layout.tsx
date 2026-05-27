@@ -32,14 +32,16 @@ export default function RootLayout({
         {/* Nav */}
         <header className="sticky top-0 z-50 border-b border-white/[0.05] bg-[#080a0f]/90 backdrop-blur-sm">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
-            <div className="flex items-center justify-between h-14">
+            <div className="flex items-center gap-4 h-14">
               <Link href="/" className="flex items-center gap-2 shrink-0">
                 <span className="font-bold text-white text-base tracking-tight">SkillScope</span>
-                <span className="hidden sm:inline text-xs text-white/25 font-normal mt-px">
+                <span className="hidden lg:inline text-xs text-white/25 font-normal mt-px">
                   ecosystem intelligence
                 </span>
               </Link>
-              <TopicTabs topics={ACTIVE_TOPICS} />
+              <div className="flex-1 overflow-x-auto scrollbar-none">
+                <TopicTabs topics={ACTIVE_TOPICS} />
+              </div>
             </div>
           </div>
         </header>

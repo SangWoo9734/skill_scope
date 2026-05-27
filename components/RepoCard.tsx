@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import type { RepoWithVelocity, Repo } from '@/types'
-import { STATUS_BG } from '@/lib/lifecycle'
 
 interface RepoCardProps {
   repo: Repo | RepoWithVelocity
@@ -12,6 +11,23 @@ function hasVelocity(r: Repo | RepoWithVelocity): r is RepoWithVelocity {
   return 'velocity_7d' in r
 }
 
+/** Strip markdown syntax for display */
+function stripMarkdown(text: string): string {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/\*(.+?)\*/g, '$1')
+    .replace(/`(.+?)`/g, '$1')
+    .replace(/\[(.+?)\]\(.+?\)/g, '$1')
+    .replace(/#{1,6}\s+/g, '')
+    .replace(/\n+/g, ' ')
+    .trim()
+}
+
+function formatNum(n: number): string {
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`
+  return String(n)
+}
+
 export default function RepoCard({ repo, showVelocity = true }: RepoCardProps) {
   const velocity7d = hasVelocity(repo) ? repo.velocity_7d : null
   const maintenanceScore = hasVelocity(repo) ? repo.maintenance_score : null
@@ -20,43 +36,43 @@ export default function RepoCard({ repo, showVelocity = true }: RepoCardProps) {
     ? formatDistanceToNow(new Date(repo.last_commit), { addSuffix: true })
     : null
 
+  const displayDesc = repo.description ? stripMarkdown(repo.description) : null
+
   return (
     <Link
       href={`/${repo.topic_id}/${repo.id}`}
-      className="group block rounded-xl border border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/10 transition-all duration-200 p-5"
+      className="group flex flex-col rounded-xl border border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/10 transition-all duration-200 p-5 gap-3"
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-sm text-white/50 truncate">{repo.owner}/</span>
-            <span className="font-semibold text-white group-hover:text-blue-400 transition-colors truncate">
-              {repo.repo}
-            </span>
-          </div>
+          <p className="text-xs text-white/35 font-mono truncate">{repo.owner}/</p>
+          <p className="font-semibold text-white group-hover:text-blue-400 transition-colors truncate leading-snug">
+            {repo.repo}
+          </p>
           {repo.name && repo.name !== repo.repo && (
-            <p className="text-xs text-white/40 mt-0.5 truncate">{repo.name}</p>
+            <p className="text-xs text-white/35 truncate mt-0.5">{repo.name}</p>
           )}
         </div>
 
         {/* Stars */}
-        <div className="flex items-center gap-1 text-amber-400 shrink-0">
+        <div className="flex items-center gap-1 text-amber-400 shrink-0 bg-amber-400/10 rounded-lg px-2 py-1">
           <StarIcon />
-          <span className="text-sm font-medium">{formatNumber(repo.stars)}</span>
+          <span className="text-sm font-semibold tabular-nums">{formatNum(repo.stars)}</span>
         </div>
       </div>
 
       {/* Description */}
-      {repo.description && (
-        <p className="mt-2 text-sm text-white/50 line-clamp-2 leading-relaxed">
-          {repo.description}
+      {displayDesc && (
+        <p className="text-sm text-white/45 line-clamp-2 leading-relaxed flex-1">
+          {displayDesc}
         </p>
       )}
 
-      {/* Tags row */}
-      <div className="mt-3 flex items-center gap-2 flex-wrap">
+      {/* Tags */}
+      <div className="flex items-center gap-1.5 flex-wrap">
         {repo.category && (
-          <span className="text-xs px-2 py-0.5 rounded-full bg-white/[0.06] text-white/40 border border-white/[0.08]">
+          <span className="text-xs px-2 py-0.5 rounded-full bg-white/[0.05] text-white/35 border border-white/[0.07]">
             {repo.category}
           </span>
         )}
@@ -66,40 +82,31 @@ export default function RepoCard({ repo, showVelocity = true }: RepoCardProps) {
           </span>
         )}
         {showVelocity && velocity7d !== null && velocity7d > 0 && (
-          <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
-            +{formatNumber(velocity7d)} this week
-          </span>
-        )}
-        {showVelocity && velocity7d !== null && velocity7d < 0 && (
-          <span className="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 font-medium">
-            {velocity7d} this week
+          <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium ml-auto">
+            +{formatNum(velocity7d)} this week
           </span>
         )}
       </div>
 
       {/* Footer */}
-      <div className="mt-3 flex items-center justify-between text-xs text-white/30">
+      <div className="flex items-center justify-between text-xs text-white/25 border-t border-white/[0.05] pt-2.5">
         <div className="flex items-center gap-3">
-          {commitLabel && (
-            <span>committed {commitLabel}</span>
-          )}
-          {repo.forks > 0 && (
-            <span>{formatNumber(repo.forks)} forks</span>
-          )}
+          {commitLabel && <span>{commitLabel}</span>}
+          {repo.forks > 0 && <span>{formatNum(repo.forks)} forks</span>}
         </div>
-        {maintenanceScore !== null && (
-          <MaintenanceDot score={maintenanceScore} />
-        )}
+        {maintenanceScore !== null && <MaintenanceDot score={maintenanceScore} />}
       </div>
     </Link>
   )
 }
 
 function MaintenanceDot({ score }: { score: number }) {
-  const color =
-    score >= 70 ? 'bg-emerald-500' : score >= 40 ? 'bg-amber-500' : 'bg-red-500'
-  const label =
-    score >= 70 ? 'Active' : score >= 40 ? 'Slowing' : 'Inactive'
+  const [color, label] =
+    score >= 70
+      ? ['bg-emerald-500', 'Active']
+      : score >= 40
+      ? ['bg-amber-500', 'Slowing']
+      : ['bg-red-500/70', 'Inactive']
   return (
     <div className="flex items-center gap-1.5">
       <div className={`w-1.5 h-1.5 rounded-full ${color}`} />
@@ -110,13 +117,8 @@ function MaintenanceDot({ score }: { score: number }) {
 
 function StarIcon() {
   return (
-    <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
       <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z" />
     </svg>
   )
-}
-
-function formatNumber(n: number): string {
-  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`
-  return String(n)
 }

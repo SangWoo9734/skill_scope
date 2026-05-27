@@ -26,9 +26,12 @@ export default function TrendChart({
     return (
       <div
         style={{ height }}
-        className="flex items-center justify-center text-white/25 text-xs"
+        className="flex flex-col items-center justify-center gap-1.5 text-white/20"
       >
-        No history yet
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M3 3v18h18M7 16l4-4 4 4 4-6" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <span className="text-xs">Snapshot data accumulates daily — check back tomorrow</span>
       </div>
     )
   }
